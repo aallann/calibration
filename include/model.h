@@ -1,7 +1,9 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <utils/__all__.h>
+#include <utils/__types__.h>
+
+#include <memory>
 
 class Model {
    public:

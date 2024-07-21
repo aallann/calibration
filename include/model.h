@@ -5,20 +5,22 @@
 
 class Model {
    public:
-    Model(double S,
+    Model(
+        double S,
         std::shared_ptr<array> vol,
         std::shared_ptr<array> tau,
         std::shared_ptr<array> rfb,
         std::shared_ptr<array> rft,
         std::shared_ptr<array> deltas,
-        std::shared_ptr<array> omegas)
-        : S(S)
-        , vol(vol)
-        , tau(tau)
-        , rfb(rfb)
-        , rft(rft)
-        , deltas(deltas)
-        , omegas(omegas) {};
+        std::shared_ptr<array> omegas
+    ):
+        S(S),
+        vol(vol),
+        tau(tau),
+        rfb(rfb),
+        rft(rft),
+        deltas(deltas),
+        omegas(omegas) {};
 
     virtual ~Model() = default;
 

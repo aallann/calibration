@@ -22,12 +22,26 @@ class EuropeanOption final : public Option {
     EuropeanOption(const Underlying &underlying);
     ~EuropeanOption() override = default;
 
-    void static setStrikes(std::shared_ptr<array> strikes);
+    inline void static setStrikes(std::shared_ptr<array> strikes) {
+        EuropeanOption::strikes = strikes;
+    };
 
-    void static setTau(std::shared_ptr<array> tau);
+    inline void static setTenors(std::shared_ptr<array> tau) {
+        EuropeanOption::tau = tau;
+    };
 
     inline std::tuple<unsigned, unsigned> getIndex() const {
         return idx;
+    };
+
+    inline double getStrike() const {
+        auto [i, j] = this->idx;
+        return (*strikes)(i, j);
+    };
+
+    inline double getTenor() const {
+        auto [i, j] = this->idx;
+        return (*tau)(i, j);
     };
 
     inline static std::vector<std::vector<unsigned>> getOptions() {

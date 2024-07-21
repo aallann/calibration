@@ -38,7 +38,7 @@ std::shared_ptr<array> BlackScholes::strikeFromDelta() {
     return strikes;
 }
 
-array BlackScholes::getDeltaFromStrike() {};
+array BlackScholes::getDeltaFromStrike() {}
 
 array BlackScholes::price(std::vector<EuropeanOption> &options) {
     array d1 = this->d1(options);
@@ -60,4 +60,4 @@ array BlackScholes::price(std::vector<EuropeanOption> &options) {
     return prices;
 }
 
-array BlackScholes::impVol(std::vector<EuropeanOption> &options) {};
+array BlackScholes::impVol(std::vector<EuropeanOption> &options) {}

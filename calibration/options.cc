@@ -1,6 +1,7 @@
 #include <options.h>
 
-EuropeanOption::EuropeanOption(const Underlying &underlying) : Option(underlying) {
+EuropeanOption::EuropeanOption(const Underlying &underlying)
+ : Option(underlying) {
     uint j = underlying.idx;
 
     if (options.size() <= j) {

@@ -11,4 +11,4 @@ EuropeanOption::EuropeanOption(const Underlying &underlying)
     unsigned i = options[j].size();
     options[j].emplace_back(j);
     idx = std::make_tuple(i, j);
-};
+}

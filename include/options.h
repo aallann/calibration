@@ -48,14 +48,13 @@ class EuropeanOption final : public Option {
         return options;
     };
 
-    inline static std::shared_ptr<array> strikes = nullptr;
-    inline static std::shared_ptr<array> tau = nullptr;
-    inline static std::vector<std::vector<unsigned>> options = { {} };
-
     friend class BlackScholes;
 
    private:
     std::tuple<unsigned, unsigned> idx;
+    inline static std::shared_ptr<array> strikes = nullptr;
+    inline static std::shared_ptr<array> tau = nullptr;
+    inline static std::vector<std::vector<unsigned>> options = { {} };
 };
 
 #endif  // OPTIONS_H

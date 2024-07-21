@@ -50,9 +50,10 @@ array BlackScholes::price(std::vector<EuropeanOption> &options) {
         double omega = (*omegas)(i, j);
 
         prices(i, j) = omega * (
-            (S * std::exp(-(*rfb)(i, j) * (*tau)(i, j)) * standardGaussian.cdf(omega * d1(i, j)))
-                - ((*option.strikes)(i, j) *std::exp(-(*rft)(i, j) * (*tau)(i, j))
-                    * standardGaussian.cdf(omega * d2(i, j)))
+            (S * std::exp(-(*rfb)(i, j) * (*tau)(i, j))
+                * standardGaussian.cdf(omega * d1(i, j)))
+            - ((*option.strikes)(i, j) * std::exp(-(*rft)(i, j) * (*tau)(i, j))
+                * standardGaussian.cdf(omega * d2(i, j)))
         );
     }
 

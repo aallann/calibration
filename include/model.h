@@ -13,40 +13,21 @@ class Model {
         std::shared_ptr<array> rft,
         std::shared_ptr<array> deltas,
         std::shared_ptr<array> omegas
-    ):
-        S(S),
-        vol(vol),
-        tau(tau),
-        rfb(rfb),
-        rft(rft),
-        deltas(deltas),
-        omegas(omegas) {};
+    );
 
     virtual ~Model() = default;
 
-    inline static void setVol(std::shared_ptr<array> vol) {
-        Model::vol = vol;
-    };
+    static void setVol(std::shared_ptr<array> vol);
 
-    inline static void setTau(std::shared_ptr<array> tau) {
-        Model::tau = tau;
-    };
+    static void setTau(std::shared_ptr<array> tau);
 
-    inline static void setBaseYieldRates(std::shared_ptr<array> rfb) {
-        Model::rfb = rfb;
-    };
+    static void setBaseYieldRates(std::shared_ptr<array> rfb);
 
-    inline static void setTermYieldRates(std::shared_ptr<array> rft) {
-        Model::rft = rft;
-    };
+    static void setTermYieldRates(std::shared_ptr<array> rft);
 
-    inline static void setDeltas(std::shared_ptr<array> deltas) {
-        Model::deltas = deltas;
-    };
+    static void setDeltas(std::shared_ptr<array> deltas);
 
-    inline static void setOmegas(std::shared_ptr<array> omegas) {
-        Model::omegas = omegas;
-    };
+    static void setOmegas(std::shared_ptr<array> omegas);
 
    protected:
     double S;

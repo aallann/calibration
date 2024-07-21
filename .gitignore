@@ -1,5 +1,7 @@
 .clang-format
 .vscode
+CMakeLists.txt
+src/CMakeLists.txt
 build/
 data/
 bin/

@@ -10,7 +10,8 @@
 
 class Option {
    public:
-    Option(const Underlying &underlying) : underlying(underlying) {};
+    explicit Option(const Underlying &underlying)
+    : underlying(underlying) {};
     virtual ~Option() = default;
 
    protected:
@@ -19,19 +20,19 @@ class Option {
 
 class EuropeanOption final : public Option {
    public:
-    EuropeanOption(const Underlying &underlying);
+    explicit EuropeanOption(const Underlying &underlying);
     ~EuropeanOption() override = default;
 
-    inline void static setStrikes(std::shared_ptr<array> strikes) {
+    inline static void setStrikes(std::shared_ptr<array> strikes) {
         EuropeanOption::strikes = strikes;
     };
 
-    inline void static setTenors(std::shared_ptr<array> tau) {
+    inline static void setTenors(std::shared_ptr<array> tau) {
         EuropeanOption::tau = tau;
     };
 
-    inline std::tuple<unsigned, unsigned> getIndex() const {
-        return idx;
+    inline std::tuple<uint, uint> getIndex() const {
+        return this->idx;
     };
 
     inline double getStrike() const {
@@ -44,17 +45,17 @@ class EuropeanOption final : public Option {
         return (*tau)(i, j);
     };
 
-    inline static std::vector<std::vector<unsigned>> getOptions() {
+    inline static std::vector<std::vector<uint>> getOptions() {
         return options;
     };
 
     friend class BlackScholes;
 
    private:
-    std::tuple<unsigned, unsigned> idx;
+    std::tuple<uint, uint> idx;
     inline static std::shared_ptr<array> strikes = nullptr;
     inline static std::shared_ptr<array> tau = nullptr;
-    inline static std::vector<std::vector<unsigned>> options = { {} };
+    inline static std::vector<std::vector<uint>> options = { {} };
 };
 
 #endif  // OPTIONS_H

@@ -13,10 +13,15 @@ class BlackScholes : public Model {
     ~BlackScholes() override = default;
 
     array d1(std::vector<EuropeanOption> &options) const;
+
     array d2(std::vector<EuropeanOption> &options) const;
+
     std::shared_ptr<array> strikeFromDelta();
+
     array deltaFromStrike();
+
     array price(std::vector<EuropeanOption> &options);
+
     array impVol(std::vector<EuropeanOption> &options);
 
     inline static void setStrikes(std::shared_ptr<array> strikes) {

@@ -16,4 +16,9 @@ typedef Eigen::MatrixXcd complex_matrix;  //     ~(complex)~
 typedef Eigen::ArrayXXd array;           // 2D dynamic array type
 typedef Eigen::ArrayXXcd complex_array;  //     ~(complex)~
 
+
+// fixed array more performant when sizes are known at compile time
+template <typename type, int n, int m>
+using ndarray = Eigen::Array<type, n, m>;
+
 #endif  // __TYPES__H

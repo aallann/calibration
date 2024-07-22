@@ -31,7 +31,7 @@ class Model {
 
     static void setOmegas(std::shared_ptr<array> omegas);
 
-   private:
+   protected:
     double S;
     inline static std::shared_ptr<array> vol = nullptr;
     inline static std::shared_ptr<array> tau = nullptr;

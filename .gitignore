@@ -1,7 +1,9 @@
 .clang-format
 .vscode
+.trunk
 CMakeLists.txt
-src/CMakeLists.txt
 build/
-data/
 bin/
+include/constants.h
+calibration/preprocessing.cc
+calibration/CMakeLists.txt

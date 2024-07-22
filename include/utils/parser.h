@@ -17,7 +17,7 @@ class Parser {
     ~Parser() = default;
 
     void saveData(const std::string &filename, const array &data);
-
+    
     array readData(const std::string &filename);
 
    private:

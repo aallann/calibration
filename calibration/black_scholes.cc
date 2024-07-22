@@ -1,7 +1,5 @@
 #include <black_scholes.h>
 
-BlackScholes::BlackScholes(double S) : Model(S) {};
-
 array BlackScholes::d1(std::vector<EuropeanOption> &options) const {
     return (log(S / (*strikes)) + 
         ((*rft) - (*rfb) + 0.5 * (*vol).square()) * (*tau)) /
@@ -13,16 +11,16 @@ array BlackScholes::d2(std::vector<EuropeanOption> &options) const {
 }
 
 std::shared_ptr<array> BlackScholes::strikeFromDelta() {
-    uint n = vol->rows();
-    uint m = vol->cols();
-
-    array fwdDeltas(n, m) = exp((*rfb) * (*tau)) * (*deltas);
+    int n = vol->rows();
+    int m = vol->cols();
 
     array normInvFwdDeltas(n, m);
     for (uint i = 0; i < n; i++) {
         for (uint j = 0; j < m; j++) {
+            double fwdDelta =
+                std::exp((*rfb)(i, j) * (*tau)(i, j)) * (*deltas)(i, j);
             normInvFwdDeltas(i, j) =
-                standardGaussian.quantile((*omegas)(i, j) * fwdDeltas(i, j));
+                standardGaussian.quantile((*omegas)(i, j) * fwdDelta);
         }
     }
 
@@ -37,8 +35,7 @@ std::shared_ptr<array> BlackScholes::strikeFromDelta() {
     return strikes;
 }
 
-array BlackScholes::getDeltaFromStrike() {
-    //TODO
+array BlackScholes::deltaFromStrike() {
     return array();
 }
 

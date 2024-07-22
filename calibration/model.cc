@@ -22,7 +22,7 @@ void Model::setVol(std::shared_ptr<array> vol) {
     Model::vol = vol;
 };
 
-void Model::setTau(std::shared_ptr<array> tau) {
+void Model::setTenors(std::shared_ptr<array> tau) {
     Model::tau = tau;
 };
 

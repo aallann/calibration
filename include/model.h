@@ -21,7 +21,7 @@ class Model {
 
     static void setVol(std::shared_ptr<array> vol);
 
-    static void setTau(std::shared_ptr<array> tau);
+    static void setTenors(std::shared_ptr<array> tau);
 
     static void setBaseYieldRates(std::shared_ptr<array> rfb);
 

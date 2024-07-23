@@ -10,13 +10,13 @@ class Heston : public Model{
      Heston(
         double S,
         uint nDims,
-        std::shared_ptr<array> vol = nullptr,
-        std::shared_ptr<array> tau = nullptr,
-        std::shared_ptr<array> strikes = nullptr,
-        std::shared_ptr<array> rfb = nullptr,
-        std::shared_ptr<array> rft = nullptr,
-        std::shared_ptr<array> deltas = nullptr,
-        std::shared_ptr<array> omegas = nullptr
+        std::shared_ptr<array> vol,
+        std::shared_ptr<array> tau,
+        std::shared_ptr<array> strikes,
+        std::shared_ptr<array> rfb,
+        std::shared_ptr<array> rft,
+        std::shared_ptr<array> deltas,
+        std::shared_ptr<array> omegas
      );
 
      ~Heston() override = default;

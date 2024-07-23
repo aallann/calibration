@@ -29,9 +29,7 @@ class Heston : public Model{
      complex_array A(complex_array &g, complex_array &s, int i) const;
      complex_array B(complex_array &g, complex_array &s, int i) const;
 
-     // characteristic function
      complex_array phi(complex_matrix &_xi_, int i) const;
-
      array price(const array &p);
 
     inline static void setStrikes(std::shared_ptr<array> strikes_ptr) {
@@ -47,8 +45,6 @@ class Heston : public Model{
     }
 
     private:
-
-    // state
      inline void _updateState(const array &p);
      inline void _discretiseSpace();
 

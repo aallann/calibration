@@ -21,16 +21,18 @@ class Heston : public Model{
 
      ~Heston() override = default;
 
-     // auxiliary functions 
+
      complex_array c(complex_matrix &_xi_) const;
      complex_array h(complex_matrix &_xi_) const;
      complex_array s(complex_matrix &_xi_, complex_array &c, complex_array &h) const;
      complex_array g(complex_array &c, complex_array &d) const;
      complex_array A(complex_array &g, complex_array &s, int i) const;
      complex_array B(complex_array &g, complex_array &s, int i) const;
-
      complex_array phi(complex_matrix &_xi_, int i) const;
+
      array price(const array &p);
+
+     array gradient(const array &p);
 
     inline static void setStrikes(std::shared_ptr<array> strikes_ptr) {
         Heston::strikes = strikes_ptr;
@@ -45,8 +47,8 @@ class Heston : public Model{
     }
 
     private:
-     inline void _updateState(const array &p);
-     inline void _discretiseSpace();
+     void _updateParams(const array &p);
+     void _discretiseSpace();
 
      inline static std::shared_ptr<array> prices = nullptr;
      inline static std::shared_ptr<array> strikes = nullptr;

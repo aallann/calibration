@@ -1,6 +1,5 @@
 .clang-format
 .vscode
-.trunk
 CMakeLists.txt
 build/
 bin/

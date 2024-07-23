@@ -78,7 +78,7 @@ complex_array Heston::dB(
     return (*tau)(i, 0) * exp(-s * (*tau)(i, 0)) * (1 - g) / 
         (1 - g * exp(-s * (*tau)(i, 0))).square() * du + 
             (1 - exp(-s * (*tau)(i, 0))) * exp(-s * (*tau)(i, 0)) / 
-        (1 - g * exp(-s * (*tau)(i, 0))).square() * dv;
+                (1 - g * exp(-s * (*tau)(i, 0))).square() * dv;
 }
 
 complex_array Heston::phi(complex_matrix &_xi_, int i) const {
@@ -100,7 +100,7 @@ complex_array Heston::phi(complex_matrix &_xi_, int i) const {
                  .array()));
 }
 
-array __attribute__((always_inline)) Heston::price(const array &p) {
+array Heston::price(const array &p) {
     this->_updateParams(p);
 
     array prices((*tau).rows(), (*tau).cols());
@@ -121,6 +121,8 @@ array __attribute__((always_inline)) Heston::price(const array &p) {
 
     return prices;
 }
+
+array Heston::gradient(const array &p) {};
 
 // internal state 
 void Heston::_updateParams(const array &p) {

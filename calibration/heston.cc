@@ -7,13 +7,15 @@ Heston::Heston(
     uint nDims,
     std::shared_ptr<array> vol,
     std::shared_ptr<array> tau,
+    std::shared_ptr<array> strikes,
     std::shared_ptr<array> rfb,
     std::shared_ptr<array> rft,
     std::shared_ptr<array> deltas,
     std::shared_ptr<array> omegas
-) : nDims(nDims),
+) : nDims(nDims), 
     Model(S, vol, tau, rfb, rft, deltas, omegas) {
     this->_discretiseSpace();
+    Heston::strikes = strikes;
 }
 
 complex_array Heston::c(complex_matrix &_xi_) const {
@@ -75,12 +77,36 @@ array Heston::price(const array &p) {
         complex_array _phi_ = this->phi(_xi_, i);
 
         array moneyness = (array(1, 1) << (*strikes)(i, 0) / S).finished();
-        complex_array payoff = S * ((moneyness.replicate(1, xi.cols())).pow(_i_ * xi + alpha + 1) /
-                                    ((_i_ * xi + alpha) * (_i_ * xi + alpha + 1)));
+        complex_array payoff = S * 
+            ((moneyness.replicate(1, xi.cols())).pow(_i_ * xi + alpha + 1) /
+                ((_i_ * xi + alpha) * (_i_ * xi + alpha + 1)));
 
         array integrand = real((conj(payoff) * _phi_));
         prices.row(i) = integrand.sum() * dxi / (2 * M_PI);
     }
 
     return array(1, 1);
+}
+
+void Heston::_updateState(const array &p) {
+    kappa = p.block(0, 0, nDims, 1);
+    vbar = p.block(nDims, 0, nDims, 1);
+    sigma = p.block(2 * nDims, 0, nDims, 1);
+    rho = p.block(3 * nDims, 0, nDims, 1);
+    v0 = p.block(4 * nDims, 0, nDims, 1);
+    am = p.block(5 * nDims, 0, nDims, 1);
+    an = p.block(6 * nDims, 0, nDims, 1);
+    rm = p.block(7 * nDims, 0, nDims, 1);
+    rn = p.block(8 * nDims, 0, nDims, 1);
+    rm_init = (array(1, 1) << p(9 * nDims, 0)).finished();
+    rn_init = (array(1, 1) << p(p.rows() - 1, 0)).finished();
+}
+
+void Heston::_discretiseSpace(){
+    xWidth = 20;
+    nGrid = std::pow(2, 10);
+    N2 = 0.5 * static_cast<double>(nGrid);
+    upperBound = static_cast<double>(xWidth) / 2.0;
+    dxi = M_PI / upperBound;
+    xi.row(0) = dxi * xi.row(0).setLinSpaced(nGrid, -N2, N2);
 }

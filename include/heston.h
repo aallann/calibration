@@ -21,6 +21,7 @@ class Heston : public Model{
 
      ~Heston() override = default;
 
+     // auxiliary
      complex_array c(complex_matrix &_xi_) const;
      complex_array h(complex_matrix &_xi_) const;
      complex_array s(complex_matrix &_xi_, complex_array &c, complex_array &h) const;
@@ -28,6 +29,24 @@ class Heston : public Model{
      complex_array A(complex_array &g, complex_array &s, int i) const;
      complex_array B(complex_array &g, complex_array &s, int i) const;
      complex_array phi(complex_matrix &_xi_, int i) const;
+
+     // partial derivatives
+     complex_array dg(complex_array &dc, complex_array &ds) const;
+     complex_array dA(complex_array &df, complex_array &dg, int i) const;
+     complex_array dB(complex_array &df, complex_array &dg, int i) const;
+
+     // raw (complex) sensitivities
+     complex_array Kappa(complex_matrix &_xi_, int i) const;
+     complex_array Vbar(complex_matrix &_xi_, int i) const;
+     complex_array Sigma(complex_matrix &_xi_, int i) const;
+     complex_array Rho(complex_matrix &_xi_, int i) const;
+     complex_array V0(complex_matrix &_xi_, int i) const;
+     complex_array Am(complex_matrix &_xi_, int i) const;
+     complex_array An(complex_matrix &_xi_, int i) const;
+     complex_array Rm(complex_matrix &_xi_, int i) const;
+     complex_array Rn(complex_matrix &_xi_, int i) const;
+     complex_array RmInit(complex_matrix &_xi_, int i) const;
+     complex_array RnInit(complex_matrix &_xi_, int i) const;
 
      array price(const array &p);
 

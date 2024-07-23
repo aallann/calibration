@@ -7,3 +7,4 @@ bin/
 include/constants.h
 calibration/preprocessing.cc
 calibration/CMakeLists.txt
+Dockerfile

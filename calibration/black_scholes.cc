@@ -36,6 +36,7 @@ std::shared_ptr<array> BlackScholes::strikeFromDelta() {
 }
 
 array BlackScholes::deltaFromStrike() {
+    //TODO
     return array();
 }
 
@@ -60,6 +61,6 @@ array BlackScholes::price(std::vector<EuropeanOption> &options) {
 }
 
 array BlackScholes::impVol(std::vector<EuropeanOption> &options) {
-        //TODO
+     //TODO
     return array();
 }

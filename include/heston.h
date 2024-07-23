@@ -21,7 +21,6 @@ class Heston : public Model{
 
      ~Heston() override = default;
 
-
      complex_array c(complex_matrix &_xi_) const;
      complex_array h(complex_matrix &_xi_) const;
      complex_array s(complex_matrix &_xi_, complex_array &c, complex_array &h) const;

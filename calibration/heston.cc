@@ -19,18 +19,19 @@ Heston::Heston(
 }
 
 complex_array Heston::c(complex_matrix &_xi_) const {
-    return (-(rho * sigma * (an - am) * _i_).matrix() * _xi_).array().colwise() 
-            + kappa;
+    return kappa.replicate(1, _xi_.cols()) - 
+        ((rho * sigma * (an - am) * _i_).matrix() * _xi_).array();
 }
 
 complex_array Heston::h(complex_matrix &_xi_) const {
-    return (((an - am).square().matrix() * _xi_.cwiseProduct(_xi_)).array() +
-        ((_i_ * (an.square() - am.square())).matrix() * _xi_).array() -
-            ((2. * _i_ * (rn - rm)).matrix() * _xi_).array()).colwise() + (2 * rn);
+    return ((an - am).square().matrix() * _xi_.cwiseProduct(_xi_)).array() +
+                ((_i_ * (an.square() - am.square())).matrix() * _xi_).array() -
+            ((2. * _i_ * (rn - rm)).matrix() * _xi_).array() + 
+                    (2 * rn).replicate(1, _xi_.cols()); 
 }
 
 complex_array Heston::s(complex_matrix &_xi_, complex_array &c, complex_array &h) const {
-    return sqrt(c.square().colwise() + sigma.square() * h);
+    return sqrt(c.square() + sigma.square().replicate(1, _xi_.cols()) * h);
 }
 
 complex_array Heston::g(complex_array &c, complex_array &s) const {
@@ -64,8 +65,8 @@ complex_array Heston::phi(complex_matrix &_xi_, int i) const {
                  .array()));
 }
 
-array Heston::price(const array &p) {
-    this->_updateState(p);
+array __attribute__((always_inline)) Heston::price(const array &p) {
+    this->_updateParams(p);
 
     array prices((*tau).rows(), (*tau).cols());
     for (int i = 0; i < (*tau).rows(); i++) {
@@ -86,7 +87,8 @@ array Heston::price(const array &p) {
     return array(1, 1);
 }
 
-void Heston::_updateState(const array &p) {
+// internal state management function
+void Heston::_updateParams(const array &p) {
     kappa = p.block(0, 0, nDims, 1);
     vbar = p.block(nDims, 0, nDims, 1);
     sigma = p.block(2 * nDims, 0, nDims, 1);
@@ -100,6 +102,7 @@ void Heston::_updateState(const array &p) {
     rn_init = (array(1, 1) << p(p.rows() - 1, 0)).finished();
 }
 
+// internal state management function
 void Heston::_discretiseSpace(){
     xWidth = 20;
     nGrid = std::pow(2, 10);

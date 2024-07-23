@@ -33,17 +33,17 @@ class Heston : public Model{
 
      array gradient(const array &p);
 
-    inline static void setStrikes(std::shared_ptr<array> strikes_ptr) {
+     inline static void setStrikes(std::shared_ptr<array> strikes_ptr) {
         Heston::strikes = strikes_ptr;
-    };
+     }
 
-    inline static void setPrices(std::shared_ptr<array> prices_ptr) {
+     inline static void setPrices(std::shared_ptr<array> prices_ptr) {
         Heston::prices = prices_ptr;
-    };
+     }
 
-    inline static array getPrices(){
+     inline static array getPrices(){
         return (*Heston::prices);
-    }
+     }
 
     private:
      void _updateParams(const array &p);

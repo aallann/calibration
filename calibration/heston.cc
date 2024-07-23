@@ -40,11 +40,46 @@ complex_array Heston::g(complex_array &c, complex_array &s) const {
 
 complex_array Heston::A(complex_array &g, complex_array &s, int i) const {
     return (1 - g * exp(-s * (*tau)(i, 0))) / (1 - g);
-};
+}
 
 complex_array Heston::B(complex_array &g, complex_array &s, int i) const {
     return (1 - exp(-s * (*tau)(i, 0))) / (1 - g * exp(-s * (*tau)(i, 0)));
-};
+}
+
+complex_array Heston::dg(
+    complex_array &du, 
+    complex_array &dv, 
+    complex_array &c, 
+    complex_array &s
+) const {
+    return ((du - dv) * (c + s) - (c - s) * (du + dv)) / 
+        (c + s).square();
+}
+
+complex_array Heston::dA(
+    complex_array &du, 
+    complex_array &dv, 
+    complex_array &s,
+    complex_array &g,
+    int i
+) const {
+    return (*tau)(i, 0) * exp(-s * (*tau)(i, 0)) * g / 
+        (1 - g) * du + (1 - exp(-s * (*tau)(i, 0))) / 
+            (1 - g).square() * dv;
+}
+
+complex_array Heston::dB(
+    complex_array &du,
+    complex_array &dv, 
+    complex_array &s,
+    complex_array &g,
+    int i
+) const {
+    return (*tau)(i, 0) * exp(-s * (*tau)(i, 0)) * (1 - g) / 
+        (1 - g * exp(-s * (*tau)(i, 0))).square() * du + 
+            (1 - exp(-s * (*tau)(i, 0))) * exp(-s * (*tau)(i, 0)) / 
+        (1 - g * exp(-s * (*tau)(i, 0))).square() * dv;
+}
 
 complex_array Heston::phi(complex_matrix &_xi_, int i) const {
     complex_array c = this->c(_xi_);
@@ -84,10 +119,10 @@ array __attribute__((always_inline)) Heston::price(const array &p) {
         prices.row(i) = integrand.sum() * dxi / (2 * M_PI);
     }
 
-    return array(1, 1);
+    return prices;
 }
 
-// internal state management function
+// internal state 
 void Heston::_updateParams(const array &p) {
     kappa = p.block(0, 0, nDims, 1);
     vbar = p.block(nDims, 0, nDims, 1);
@@ -102,7 +137,7 @@ void Heston::_updateParams(const array &p) {
     rn_init = (array(1, 1) << p(p.rows() - 1, 0)).finished();
 }
 
-// internal state management function
+// internal state 
 void Heston::_discretiseSpace(){
     xWidth = 20;
     nGrid = std::pow(2, 10);

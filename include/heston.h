@@ -4,6 +4,7 @@
 #include <model.h>
 
 #include <cmath>
+#include <variant>
 
 class Heston : public Model{
     public:
@@ -51,7 +52,7 @@ class Heston : public Model{
 
      // auxiliary partial derivatives
      complex_array dg(
-         complex_array &du, 
+         std::variant<int, complex_array> &du, 
          complex_array &dv, 
          complex_array &c, 
          complex_array &s

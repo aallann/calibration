@@ -30,19 +30,34 @@ complex_array Heston::h(complex_matrix &_xi_) const {
                     (2 * rn).replicate(1, _xi_.cols()); 
 }
 
-complex_array Heston::s(complex_matrix &_xi_, complex_array &c, complex_array &h) const {
+complex_array Heston::s(
+    complex_matrix &_xi_,
+    complex_array &c,
+    complex_array &h
+) const {
     return sqrt(c.square() + sigma.square().replicate(1, _xi_.cols()) * h);
 }
 
-complex_array Heston::g(complex_array &c, complex_array &s) const {
+complex_array Heston::g(
+    complex_array &c,
+    complex_array &
+) const {
     return (c - s) / (c + s);
 }
 
-complex_array Heston::A(complex_array &g, complex_array &s, int i) const {
+complex_array Heston::A(
+    complex_array &g,
+    complex_array &s,
+    int i
+) const {
     return (1 - g * exp(-s * (*tau)(i, 0))) / (1 - g);
 }
 
-complex_array Heston::B(complex_array &g, complex_array &s, int i) const {
+complex_array Heston::B(
+    complex_array &g,
+    complex_array &s,
+    int i
+) const {
     return (1 - exp(-s * (*tau)(i, 0))) / (1 - g * exp(-s * (*tau)(i, 0)));
 }
 

@@ -65,7 +65,7 @@ class Heston : public Model{
          int i
      ) const;
 
-    complex_array dB(
+     complex_array dB(
          complex_array &du,
          complex_array &dv, 
          complex_array &s,
@@ -73,7 +73,14 @@ class Heston : public Model{
          int i
      ) const;
 
-    complex_array phi(complex_matrix &_xi_, int i) const;
+     complex_array phi(
+         complex_matrix &_xi_,
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         complex_array &B,
+         int i
+     ) const;
 
      array price(const array &p);
 

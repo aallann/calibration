@@ -35,7 +35,8 @@ complex_array Heston::s(
     complex_array &c,
     complex_array &h
 ) const {
-    return sqrt(c.square() + sigma.square().replicate(1, _xi_.cols()) * h);
+    return sqrt(c.square() 
+        + sigma.square().replicate(1, _xi_.cols()) * h);
 }
 
 complex_array Heston::g(
@@ -50,7 +51,8 @@ complex_array Heston::A(
     complex_array &s,
     int i
 ) const {
-    return (1 - g * exp(-s * (*tau)(i, 0))) / (1 - g);
+    return (1 - g * exp(-s * (*tau)(i, 0))) 
+        / (1 - g);
 }
 
 complex_array Heston::B(
@@ -58,7 +60,8 @@ complex_array Heston::B(
     complex_array &s,
     int i
 ) const {
-    return (1 - exp(-s * (*tau)(i, 0))) / (1 - g * exp(-s * (*tau)(i, 0)));
+    return (1 - exp(-s * (*tau)(i, 0))) / 
+        (1 - g * exp(-s * (*tau)(i, 0)));
 }
 
 complex_array Heston::dg(
@@ -96,15 +99,14 @@ complex_array Heston::dB(
                 (1 - g * exp(-s * (*tau)(i, 0))).square() * dv;
 }
 
-complex_array Heston::phi(complex_matrix &_xi_, int i) const {
-    complex_array c = this->c(_xi_);
-    complex_array h = this->h(_xi_);
-    complex_array s = this->s(_xi_, c, h);
-    complex_array g = this->g(c, s);
-
-    complex_array A = this->A(g, s, i);
-    complex_array B = this->B(g, s, i);
-
+complex_array Heston::phi(
+    complex_matrix &_xi_,
+    complex_array &c,
+    complex_array &s,
+    complex_array &A,
+    complex_array &B,
+    int i
+) const {
     return exp(
         (-rn_init.replicate(1, _xi_.cols()) + 
             ((_i_ * (rn_init - rm_init)).matrix() * _xi_).array() * (*tau)(i, 0) +
@@ -120,10 +122,18 @@ array Heston::price(const array &p) {
 
     array prices((*tau).rows(), (*tau).cols());
     for (int i = 0; i < (*tau).rows(); i++) {
-        double alpha = -4 * (*omegas)(i);  // damping
-        complex_matrix _xi_ = xi + _i_ * alpha;
+        double alpha = -4 * (*omegas)(i);       // damping
+        complex_matrix _xi_ = xi + _i_ * alpha; // shifted xi
 
-        complex_array _phi_ = this->phi(_xi_, i);
+        complex_array c = this->c(_xi_);
+        complex_array h = this->h(_xi_);
+        complex_array s = this->s(_xi_, c, h);
+        complex_array g = this->g(c, s);
+
+        complex_array A = this->A(g, s, i);
+        complex_array B = this->B(g, s, i);
+
+        complex_array _phi_ = this->phi(_xi_, c, s, A, B, i);
 
         array moneyness = (array(1, 1) << (*strikes)(i, 0) / S).finished();
         complex_array payoff = S * 
@@ -137,7 +147,16 @@ array Heston::price(const array &p) {
     return prices;
 }
 
-array Heston::gradient(const array &p) {};
+array Heston::gradient(const array &p) {
+    this->_updateParams(p);
+
+    array priceGradient(p.rows(), (*tau).rows());
+    for (int i = 0; i < (*tau).rows(); i++) {
+        double alpha = -4 * (*omegas)(i); // damping
+        complex_matrix _xi_ = xi + _i_ * alpha;
+        
+    }
+}
 
 // internal state 
 void Heston::_updateParams(const array &p) {

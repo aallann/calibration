@@ -75,7 +75,7 @@ class Heston : public Model{
       ) const;
 
      // charf sensitivities to Heston parameters
-       complex_array Heston::Kappa(
+       complex_array Kappa(
          complex_array &c,
          complex_array &g,
          complex_array &s,
@@ -139,15 +139,23 @@ class Heston : public Model{
          int i
       ) const;
 
-      // rm or rn 
-      complex_array R(
+      complex_array Rm(
+         complex_matrix &_xi_,
          complex_array &c,
          complex_array &s,
+         complex_array &g,
          complex_array &A,
          complex_array &B,
-         complex_array &dh,
-         complex_array &dA,
-         complex_array &dB,
+         int i
+      ) const;
+
+      complex_array Rn(
+         complex_matrix &_xi_,
+         complex_array &c,
+         complex_array &s,
+         complex_array &g,
+         complex_array &A,
+         complex_array &B,
          int i
       ) const;
 

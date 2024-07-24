@@ -18,6 +18,7 @@ Heston::Heston(
     Heston::strikes = strikes;
 }
 
+// auxiliary equations
 complex_array Heston::c(complex_matrix &_xi_) const {
     return kappa.replicate(1, _xi_.cols()) - 
         ((rho * sigma * (an - am) * _i_).matrix() * _xi_).array();
@@ -64,6 +65,7 @@ complex_array Heston::B(
         (1 - g * exp(-s * (*tau)(i, 0)));
 }
 
+// auxiliary partials
 complex_array Heston::dg(
     std::variant<int, complex_array> &du,
     complex_array &dv, 
@@ -99,6 +101,154 @@ complex_array Heston::dB(
             (1 - exp(-s * (*tau)(i, 0))) * exp(-s * (*tau)(i, 0)) / 
                 (1 - g * exp(-s * (*tau)(i, 0))).square() * dv;
 }
+
+
+// charf sensitivities to Heston parameters
+complex_array Heston::Kappa(
+    complex_array &c,
+    complex_array &s,
+    complex_array &A,
+    complex_array &B,
+    complex_array &dh,
+    complex_array &dA,
+    complex_array &dB,
+    int i
+) const{
+    return ((vbar / sigma.square()).replicate(1, c.cols()) *
+                ((c - s) * (*tau)(i, 0) - 2 * log(A) +
+                    kappa.replicate(1, c.cols()) * (1 - dh) *
+                        (*tau)(i, 0) -
+                    2 * kappa.replicate(1, c.cols()) * dA / A) +
+                (v0 / sigma.square()).replicate(1, c.cols()) *
+                    ((1 - dh) * B + (c - s) * dB));
+
+}
+
+complex_array Heston::Vbar(
+    complex_array &c,
+    complex_array &s,
+    complex_array &A,
+    int i
+) const {
+    return (kappa / sigma.square()).replicate(1, c.cols()) *
+            ((c - s) * (*tau)(i, 0) - 2 * log(A));
+}
+
+complex_array Heston::Sigma(
+    complex_array &c,
+    complex_array &s,
+    complex_array &A,
+    complex_array &B,
+    complex_array &dc,
+    complex_array &dh,
+    complex_array &dA,
+    complex_array &dB,
+    int i
+) const {
+    return (((kappa * vbar * (*tau)(i, 0))).replicate(1, c.cols()) *
+                ((dc - dh) * sigma.square().replicate(1, c.cols()) -
+                    2 * (c - s) * sigma.replicate(1, c.cols())) /
+                sigma.pow(4).replicate(1, c.cols()) -
+                    2 * (kappa * vbar).replicate(1, c.cols()) *
+                (sigma.square().replicate(1, c.cols()) / A * dA -
+                    2 * sigma.replicate(1, c.cols()) * log(A)) /
+                sigma.pow(4).replicate(1, c.cols()) +
+                    v0.replicate(1, c.cols()) *
+                (((dc - dh) * B + (c - s) * dB) *
+                    sigma.square().replicate(1, c.cols()) -
+                2 * (c - s) * B * sigma.replicate(1, c.cols())) /
+                    sigma.pow(4).replicate(1, c.cols()));
+};
+   
+complex_array Heston::Rho(
+   complex_array &c,
+   complex_array &s,
+   complex_array &A,
+   complex_array &B,
+   complex_array &dc,
+   complex_array &dh,
+   complex_array &dA,
+   complex_array &dB,
+   int i
+) const {
+    return  (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+                ((dc - dh) * (*tau)(i, 0) - 2 * dA / A) +
+            (v0 / sigma.square()).replicate(1, c.cols()) * 
+                ((dc - dh) * B + (c - s) * dB));
+}
+
+complex_array Heston::V0(
+   complex_array &c,
+   complex_array &s,
+   complex_array &B,
+   int i
+) const {
+    return (c - s) * B / sigma.square().replicate(1, c.cols());
+}
+
+complex_array Heston::Am(
+   complex_array &c,
+   complex_array &s,
+   complex_array &A,
+   complex_array &B,
+   complex_array &dc,
+   complex_array &dh,
+   complex_array &dA,
+   complex_array &dB,
+   int i
+) const {
+    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+                    ((dc - dh) * (*tau)(i, 0) - 2 * dA / A) +
+                (v0 / sigma.square()).replicate(1, c.cols()) *
+                    ((dc - dh) * B + (c - s) * dB));
+};
+
+complex_array Heston::An(
+   complex_array &c,
+   complex_array &s,
+   complex_array &A,
+   complex_array &B,
+   complex_array &dc,
+   complex_array &dh,
+   complex_array &dA,
+   complex_array &dB,
+   int i
+) const { 
+    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+                    ((dc - dh) * (*tau)(i, 0) - 2 * dA / A) +
+                (v0 / sigma.square()).replicate(1, c.cols()) *
+                    ((dc - dh) * B + (c - s) * dB));
+};
+
+complex_array Heston::R(
+   complex_array &c,
+   complex_array &s,
+   complex_array &A,
+   complex_array &B,
+   complex_array &dh,
+   complex_array &dA,
+   complex_array &dB,
+   int i
+) const { 
+    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+                    (-dh * (*tau)(i, 0) - 2 * dA / A) +
+                (v0 / sigma.square()).replicate(1, c.cols()) *
+                    (-dh * B + (c - s) * dB));
+};
+
+complex_array Heston::Rn_init(
+    complex_matrix &_xi_,
+    int i
+) const {
+    return -_i_ * (*tau)(i, 0) * _xi_.array();
+};
+
+complex_array Heston::Rm_init(
+    complex_matrix &_xi_, 
+    int i
+    ) const {
+        return (-this->Rn_init(_xi_, i)) - 1;
+    };
 
 complex_array Heston::phi(
     complex_matrix &_xi_,

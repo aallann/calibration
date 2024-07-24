@@ -22,7 +22,7 @@ class Heston : public Model{
 
      ~Heston() override = default;
 
-     // auxiliary
+     // auxiliary equations
      complex_array c(complex_matrix &_xi_) const;
 
      complex_array h(complex_matrix &_xi_) const;
@@ -56,7 +56,7 @@ class Heston : public Model{
          complex_array &dv, 
          complex_array &c, 
          complex_array &s
-     ) const;
+      ) const;
 
      complex_array dA(
          complex_array &du, 
@@ -64,7 +64,7 @@ class Heston : public Model{
          complex_array &s,
          complex_array &g,
          int i
-     ) const;
+      ) const;
 
      complex_array dB(
          complex_array &du,
@@ -72,16 +72,112 @@ class Heston : public Model{
          complex_array &s,
          complex_array &g,
          int i
-     ) const;
+      ) const;
 
-     complex_array phi(
+     // charf sensitivities to Heston parameters
+     complex_array Kappa(
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         complex_array &B,
+         complex_array &dh,
+         complex_array &dA,
+         complex_array &dB,
+         int i
+      ) const;
+
+     complex_array Vbar(
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         int i
+      ) const;
+
+     complex_array Sigma(
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         complex_array &B,
+         complex_array &dc,
+         complex_array &dh,
+         complex_array &dA,
+         complex_array &dB,
+         int i
+      ) const;
+   
+      complex_array Rho(
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         complex_array &B,
+         complex_array &dc,
+         complex_array &dh,
+         complex_array &dA,
+         complex_array &dB,
+         int i
+      ) const;
+
+      complex_array V0(
+         complex_array &c,
+         complex_array &s,
+         complex_array &B,
+         int i
+      ) const;
+
+      complex_array Am(
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         complex_array &B,
+         complex_array &dc,
+         complex_array &dh,
+         complex_array &dA,
+         complex_array &dB,
+         int i
+      ) const;
+
+      complex_array An(
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         complex_array &B,
+         complex_array &dc,
+         complex_array &dh,
+         complex_array &dA,
+         complex_array &dB,
+         int i
+      ) const;
+
+      // rm or rn 
+      complex_array R(
+         complex_array &c,
+         complex_array &s,
+         complex_array &A,
+         complex_array &B,
+         complex_array &dh,
+         complex_array &dA,
+         complex_array &dB,
+         int i
+      ) const;
+
+      complex_array Rn_init(
+         complex_matrix &_xi_,
+         int i
+      ) const;
+
+      complex_array Rm_init(
+         complex_matrix &_xi_,
+         int i
+      ) const;
+   
+      complex_array phi(
          complex_matrix &_xi_,
          complex_array &c,
          complex_array &s,
          complex_array &A,
          complex_array &B,
          int i
-     ) const;
+      ) const;
 
      array price(const array &p);
 

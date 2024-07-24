@@ -40,7 +40,7 @@ complex_array Heston::s(
 
 complex_array Heston::g(
     complex_array &c,
-    complex_array &
+    complex_array &s
 ) const {
     return (c - s) / (c + s);
 }

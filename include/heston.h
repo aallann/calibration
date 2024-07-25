@@ -75,7 +75,7 @@ class Heston : public Model{
       ) const;
 
      // charf sensitivities to Heston parameters
-       complex_array Kappa(
+      complex_array Kappa(
          complex_array &c,
          complex_array &g,
          complex_array &s,

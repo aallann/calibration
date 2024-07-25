@@ -126,7 +126,6 @@ complex_array Heston::Kappa(
                     2 * kappa.replicate(1, c.cols()) * dAdk / A) +
                 (v0 / sigma.square()).replicate(1, c.cols()) *
                     ((1 - dhdk) * B + (c - s) * dBdk));
-
 }
 
 complex_array Heston::Vbar(
@@ -174,13 +173,13 @@ complex_array Heston::Sigma(
 };
    
 complex_array Heston::Rho(
-   complex_matrix &_xi_, 
-   complex_array &c,
-   complex_array &s,
-   complex_array &g,
-   complex_array &A,
-   complex_array &B,
-   int i
+    complex_matrix &_xi_, 
+    complex_array &c,
+    complex_array &s,
+    complex_array &g,
+    complex_array &A,
+    complex_array &B,
+    int i
 ) const {
     complex_array dcdrho = -_i_ * _xi_.array() * 
         ((an - am) * sigma).replicate(1, _xi_.cols());
@@ -197,24 +196,23 @@ complex_array Heston::Rho(
 }
 
 complex_array Heston::V0(
-   complex_array &c,
-   complex_array &s,
-   complex_array &B,
-   int i
+    complex_array &c,
+    complex_array &s,
+    complex_array &B,
+    int i
 ) const {
     return (c - s) * B / sigma.square().replicate(1, c.cols());
 }
 
 complex_array Heston::Am(
-   complex_matrix &_xi_, 
-   complex_array &c,
-   complex_array &s,
-   complex_array &g,
-   complex_array &A,
-   complex_array &B,
-   int i
+    complex_matrix &_xi_, 
+    complex_array &c,
+    complex_array &s,
+    complex_array &g,
+    complex_array &A,
+    complex_array &B,
+    int i
 ) const {
-
     complex_array dcdam = _i_ * _xi_.array() * 
         (rho * sigma).replicate(1, c.cols());
     complex_array dzdam = -2 * ((an - am).matrix() * _xi_.cwiseProduct(_xi_)).array() -
@@ -233,13 +231,13 @@ complex_array Heston::Am(
 };
 
 complex_array Heston::An(
-   complex_matrix &_xi_,
-   complex_array &c,
-   complex_array &s,
-   complex_array &g,
-   complex_array &A,
-   complex_array &B,
-   int i
+    complex_matrix &_xi_,
+    complex_array &c,
+    complex_array &s,
+    complex_array &g,
+    complex_array &A,
+    complex_array &B,
+    int i
 ) const { 
     complex_array dcdan = -_i_ * _xi_.array() * 
         (rho * sigma).replicate(1, _xi_.cols());
@@ -259,13 +257,13 @@ complex_array Heston::An(
 };
 
 complex_array Heston::Rm(
-   complex_matrix &_xi_, 
-   complex_array &c,
-   complex_array &s,
-   complex_array &g,
-   complex_array &A,
-   complex_array &B,
-   int i
+    complex_matrix &_xi_, 
+    complex_array &c,
+    complex_array &s,
+    complex_array &g,
+    complex_array &A,
+    complex_array &B,
+    int i
 ) const { 
     complex_array dhdrm = _i_ * _xi_.array() * 
         sigma.replicate(1, _xi_.cols()).square() / s;
@@ -281,13 +279,13 @@ complex_array Heston::Rm(
 };
 
 complex_array Heston::Rn(
-   complex_matrix &_xi_,
-   complex_array &c,
-   complex_array &s,
-   complex_array &g,
-   complex_array &A,
-   complex_array &B,
-   int i
+    complex_matrix &_xi_,
+    complex_array &c,
+    complex_array &s,
+    complex_array &g,
+    complex_array &A,
+    complex_array &B,
+    int i
 ) const {
     complex_array dhdrn = (1 - _i_ * _xi_.array()) * 
     sigma.replicate(1, _xi_.cols()).square() / s;
@@ -297,9 +295,9 @@ complex_array Heston::Rn(
     complex_array dBdrn = this->dB(dhdrn, dgdrn, s, g, i);
 
     return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
-                    (-dhdrn * (*tau)(i, 0) - 2 * dAdrn / A) +
-                (v0 / sigma.square()).replicate(1, c.cols()) *
-                    (-dhdrn * B + (c - s) * dBdrn));
+        (-dhdrn * (*tau)(i, 0) - 2 * dAdrn / A) + (v0 / sigma.square())
+            .replicate(1, c.cols()) *
+                (-dhdrn * B + (c - s) * dBdrn));
 };
 
 complex_array Heston::Rm_init(
@@ -373,7 +371,6 @@ array Heston::gradient(const array &p) {
         complex_array s = this->s(_xi_, c, h);
         complex_array g = this->g(c, s);
 
- 
         complex_array A = this->A(g, s, i);
         complex_array B = this->B(g, s, i);
 

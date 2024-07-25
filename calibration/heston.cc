@@ -189,7 +189,7 @@ complex_array Heston::Rho(
     complex_array dAdrho = this->dA(dhdrho, dgdrho, s, g, i);
     complex_array dBdrho = this->dB(dhdrho, dgdrho, s, g, i);
 
-    return  (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
         ((dcdrho - dhdrho) * (*tau)(i, 0) - 2 * dAdrho / A) +
             (v0 / sigma.square()).replicate(1, c.cols()) * 
         ((dcdrho - dhdrho) * B + (c - s) * dBdrho));

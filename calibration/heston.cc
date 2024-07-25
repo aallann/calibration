@@ -26,9 +26,9 @@ complex_array Heston::c(complex_matrix &_xi_) const {
 
 complex_array Heston::h(complex_matrix &_xi_) const {
     return ((an - am).square().matrix() * _xi_.cwiseProduct(_xi_)).array() +
-                ((_i_ * (an.square() - am.square())).matrix() * _xi_).array() -
+        ((_i_ * (an.square() - am.square())).matrix() * _xi_).array() -
             ((2. * _i_ * (rn - rm)).matrix() * _xi_).array() + 
-                    (2 * rn).replicate(1, _xi_.cols()); 
+        (2 * rn).replicate(1, _xi_.cols()); 
 }
 
 complex_array Heston::s(

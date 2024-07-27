@@ -2,5 +2,6 @@
 .vscode
 build/
 bin/
+data/
 include/constants.h
 calibration/preprocessing.cc

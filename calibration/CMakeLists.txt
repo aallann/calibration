@@ -15,16 +15,14 @@ target_sources(preprocessing PRIVATE
 
 target_include_directories(preprocessing PRIVATE
     ${CMAKE_SOURCE_DIR}/include
-    ${EXTERNAL_DIR}/levmar
-    ${HOMEBREW_DIR}/eigen/include/eigen3
-    ${HOMEBREW_DIR}/boost/include
-    ${HOMEBREW_DIR}/catch2/include/catch2
-    ${HOMEBREW_DIR}/lapack/include
-    ${HOMEBREW_DIR}/openblas/include
+    ${__INCLUDE_PATH__}
+    ${__INCLUDE_PATH__}/eigen3
+    ${__INCLUDE_PATH__}/boost
+    ${__INCLUDE_PATH__}/lapack
+    ${__INCLUDE_PATH__}/openblas
 )
 
 target_link_libraries(preprocessing PRIVATE
-    levmar
     lapack
     openblas
     m

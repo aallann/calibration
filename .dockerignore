@@ -1,7 +1,6 @@
 bin/
 build/
 data/
-calibration/preprocessing.cc
 .vscode
 .gitignore
 .clang-format

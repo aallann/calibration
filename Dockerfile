@@ -1,5 +1,5 @@
 # OS Ubuntu base image
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL maintainer="ostos" email="ucabjo0@ucl.ac.uk"
 
@@ -7,7 +7,7 @@ LABEL maintainer="ostos" email="ucabjo0@ucl.ac.uk"
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Dependencies 
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
     build-essential \
     git \
     cmake \
@@ -15,11 +15,12 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     valgrind \
     liblapack-dev \
+    liblapacke-dev \
     libopenblas-dev \
     liblua5.3-dev \
     python3 \
     python3-pip \
-    && apt-get clean \
+    && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
 # dir for bash scripts
@@ -27,11 +28,14 @@ RUN mkdir -p /usr/local/bin
 
 # copy scripts
 COPY ./scripts/scan.sh /usr/local/bin
-
 RUN chmod +x /usr/local/bin/scan.sh
+RUN /usr/local/bin/scan.sh
 
-WORKDIR /usr/local/bin
+WORKDIR /usr/calibration
+COPY . /usr/calibration/
 
-#RUN ./scan.sh
+RUN cmake -S . -B build
 
-CMD ["/usr/local/bin/scan.sh"]
+RUN cmake --build build -t preprocessing
+
+CMD ["./bin/preprocessing"]

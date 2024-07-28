@@ -1,6 +1,8 @@
 #ifndef UNDERLYING_H
 #define UNDERLYING_H
 
+#include <utils/__types__.h>
+
 #include <vector>
 
 class Underlying final {

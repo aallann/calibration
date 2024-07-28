@@ -4,6 +4,9 @@
 #include <Eigen/Dense>
 #include <complex>
 
+// uint
+typedef unsigned int uint;
+
 // linalg vector operations
 typedef Eigen::VectorXd vector;           // 1D dynamic vector type
 typedef Eigen::VectorXcd complex_vector;  //     ~(complex)~

@@ -1,36 +1,19 @@
-# CMAKE minimum version required
-cmake_minimum_required(VERSION 3.25)
+# exec src template
 
-# Intro project
-project(calibration
-    DESCRIPTION "C++ Heston (LSVM) Calibration"
-    VERSION 0.0.1
-    LANGUAGES CXX
+add_executable(preprocessing)
+
+target_sources(preprocessing PRIVATE
+    preprocessing.cc
+    underlying.cc
+    options.cc
+    model.cc
+    black_scholes.cc
+    heston.cc
+    utils/functions.cc
+    utils/parser.cc
 )
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-add_compile_options(-Wall -Ofast -march=native)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-set(HOMEBREW_DIR "/opt/homebrew/opt")
-set(EXTERNAL_DIR "$ENV{HOME}/Documents/libs")
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-find_package(Catch2 3 REQUIRED)
-
-link_directories(
-    ${EXTERNAL_DIR}/levmar/lib
-    ${HOMEBREW_DIR}/boost/lib
-    ${HOMEBREW_DIR}/lapack/lib
-    ${HOMEBREW_DIR}/openblas/lib
-    ${HOMEBREW_DIR}/boost/lib
-    ${HOMEBREW_DIR}/catch2/lib
-)
-
-include_directories(
+target_include_directories(preprocessing PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${EXTERNAL_DIR}/levmar
     ${HOMEBREW_DIR}/eigen/include/eigen3
@@ -40,5 +23,15 @@ include_directories(
     ${HOMEBREW_DIR}/openblas/include
 )
 
-add_subdirectory(src)
+target_link_libraries(preprocessing PRIVATE
+    lapack
+    openblas
+    m
+    boost_math_c99
+)
 
+target_compile_features(preprocessing PUBLIC cxx_std_17)
+
+set_target_properties(preprocessing PROPERTIES CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
+
+target_compile_definitions(preprocessing PRIVATE EIGEN_USE_LAPACKE)

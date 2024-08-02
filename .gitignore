@@ -1,9 +1,7 @@
 .clang-format
 .vscode
-CMakeLists.txt
 build/
 bin/
 include/constants.h
 calibration/preprocessing.cc
-calibration/CMakeLists.txt
 Dockerfile

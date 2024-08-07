@@ -16,28 +16,28 @@ Model::Model(
     Model::rft = rft;
     Model::deltas = deltas;
     Model::omegas = omegas;
-};
+}
 
 void Model::setVol(std::shared_ptr<array> vol) {
     Model::vol = vol;
-};
+}
 
 void Model::setTenors(std::shared_ptr<array> tau) {
     Model::tau = tau;
-};
+}
 
 void Model::setBaseYieldRates(std::shared_ptr<array> rfb) {
     Model::rfb = rfb;
-};
+}
 
 void Model::setTermYieldRates(std::shared_ptr<array> rft) {
     Model::rft = rft;
-};
+}
 
 void Model::setDeltas(std::shared_ptr<array> deltas) {
     Model::deltas = deltas;
-};
+}
 
 void Model::setOmegas(std::shared_ptr<array> omegas) {
     Model::omegas = omegas;
-};
+}

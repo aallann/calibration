@@ -6,7 +6,7 @@ EuropeanOption::EuropeanOption(const Underlying &underlying)
 
     if (options.size() <= j) {
         options.emplace_back(std::vector<uint>());
-    };
+    }
 
     unsigned i = options[j].size();
     options[j].emplace_back(j);

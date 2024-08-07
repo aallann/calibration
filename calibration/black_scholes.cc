@@ -53,8 +53,7 @@ array BlackScholes::price(std::vector<EuropeanOption> &options) {
             (S * std::exp(-(*rfb)(i, j) * (*tau)(i, j))
                 * standardGaussian.cdf(omega * d1(i, j)))
             - ((*option.strikes)(i, j) * std::exp(-(*rft)(i, j) * (*tau)(i, j))
-                * standardGaussian.cdf(omega * d2(i, j)))
-        );
+                * standardGaussian.cdf(omega * d2(i, j))));
     }
 
     return prices;

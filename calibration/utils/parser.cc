@@ -7,7 +7,7 @@ Parser::Parser() {
     if (!fs::exists(__data_path__)) {
         fs::create_directories(__data_path__);
     }
-};
+}
 
 void Parser::saveData(const std::string& newFile, const array& arr) {
     fs::path __new_file_path__ = __data_path__ / newFile;
@@ -21,7 +21,7 @@ void Parser::saveData(const std::string& newFile, const array& arr) {
     } else {
         std::cerr << "Failed to open file at " << __new_file_path__ << std::endl;
     }
-};
+}
 
 array Parser::readData(const std::string& file) {
     fs::path __file_path__ = __data_path__ / file;
@@ -30,7 +30,7 @@ array Parser::readData(const std::string& file) {
     if (!dataFile.is_open()) {
         std::cerr << "Failed to open file" << std::endl;
         return array();
-    };
+    }
 
     std::vector<double> matrixEntries;
     std::string matrixRowStr;
@@ -52,4 +52,4 @@ array Parser::readData(const std::string& file) {
 
     return Eigen::Map<Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(
         matrixEntries.data(), matrixRowCount, matrixEntries.size() / matrixRowCount);
-};
+}

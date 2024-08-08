@@ -26,10 +26,9 @@ std::shared_ptr<array> BlackScholes::strikeFromDelta() {
 
     array _strikes = S * exp((*rfb) +
         (-(*omegas) * normInvFwdDeltas) * (*vol) * sqrt(*tau) +
-        ((*rft) - (*rfb) + 0.5 * (*vol).square()) * (*tau));
+            ((*rft) - (*rfb) + 0.5 * (*vol).square()) * (*tau));
 
     strikes = std::make_shared<array>(_strikes);
-
     setStrikes(strikes);
 
     return strikes;

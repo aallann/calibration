@@ -105,7 +105,8 @@ complex_array Heston::dB(
 
 
 // charf sensitivities to Heston parameters
-complex_array Heston::Kappa(
+void Heston::Kappa(
+    complex_array &grad,
     complex_array &c,
     complex_array &g,
     complex_array &s,
@@ -119,26 +120,32 @@ complex_array Heston::Kappa(
     complex_array dAdk = this->dA(dhdk, dgdk, s, g, i);
     complex_array dBdk = this->dB(dhdk, dgdk, s, g, i);
 
-    return ((vbar / sigma.square()).replicate(1, c.cols()) *
-        ((c - s) * (*tau)(i, 0) - 2 * log(A) +
-            kappa.replicate(1, c.cols()) * (1 - dhdk) *
-        (*tau)(i, 0) -
-            2 * kappa.replicate(1, c.cols()) * dAdk / A) +
+    grad.block(0, 0, nDims, xi.cols()) = (
+        (vbar / sigma.square()).replicate(1, c.cols()) * (
+            (c - s) * (*tau)(i, 0) - 2 * log(A) +
+                kappa.replicate(1, c.cols()) * (1 - dhdk) *
+            (*tau)(i, 0) -
+                2 * kappa.replicate(1, c.cols()) * dAdk / A
+            ) +
         (v0 / sigma.square()).replicate(1, c.cols()) *
-            ((1 - dhdk) * B + (c - s) * dBdk));
+            ((1 - dhdk) * B + (c - s) * dBdk)
+    );
 }
 
-complex_array Heston::Vbar(
+void Heston::Vbar(
+    complex_array &grad,
     complex_array &c,
     complex_array &s,
     complex_array &A,
     int i
 ) const {
-    return (kappa / sigma.square()).replicate(1, c.cols()) *
-        ((c - s) * (*tau)(i, 0) - 2 * log(A));
+    grad.block(nDims, 0, nDims, xi.cols()) = 
+        (kappa / sigma.square()).replicate(1, c.cols()) *
+            ((c - s) * (*tau)(i, 0) - 2 * log(A));
 }
 
-complex_array Heston::Sigma(
+void Heston::Sigma(
+    complex_array &grad,
     complex_matrix &_xi_,
     complex_array &c,
     complex_array &h,
@@ -157,22 +164,24 @@ complex_array Heston::Sigma(
     complex_array dAdsigma = this->dA(dhdsigma, dgdsigma, s, g, i);
     complex_array dBdsigma = this->dB(dhdsigma, dgdsigma, s, g, i);
 
-    return (((kappa * vbar * (*tau)(i, 0))).replicate(1, c.cols()) *
-        ((dcdsigma - dhdsigma) * sigma.square().replicate(1, c.cols()) -
-            2 * (c - s) * sigma.replicate(1, c.cols())) /
-        sigma.pow(4).replicate(1, c.cols()) -
-            2 * (kappa * vbar).replicate(1, c.cols()) *
-        (sigma.square().replicate(1, c.cols()) / A * dAdsigma -
-            2 * sigma.replicate(1, c.cols()) * log(A)) /
-        sigma.pow(4).replicate(1, c.cols()) +
-            v0.replicate(1, c.cols()) *
-        (((dcdsigma - dhdsigma) * B + (c - s) * dBdsigma) *
-            sigma.square().replicate(1, c.cols()) -
-        2 * (c - s) * B * sigma.replicate(1, c.cols())) /
-            sigma.pow(4).replicate(1, c.cols()));
-};
+    grad.block(2 * nDims, 0, nDims, _xi_.cols()) = 
+        (((kappa * vbar * (*tau)(i, 0))).replicate(1, c.cols()) *
+            ((dcdsigma - dhdsigma) * sigma.square().replicate(1, c.cols()) -
+        2 * (c - s) * sigma.replicate(1, c.cols())) /
+            sigma.pow(4).replicate(1, c.cols()) -
+        2 * (kappa * vbar).replicate(1, c.cols()) *
+            (sigma.square().replicate(1, c.cols()) / A * dAdsigma -
+        2 * sigma.replicate(1, c.cols()) * log(A)) /
+            sigma.pow(4).replicate(1, c.cols()) +
+        v0.replicate(1, c.cols()) *
+            (((dcdsigma - dhdsigma) * B + (c - s) * dBdsigma) *
+        sigma.square().replicate(1, c.cols()) -
+            2 * (c - s) * B * sigma.replicate(1, c.cols())) /
+        sigma.pow(4).replicate(1, c.cols()));
+}
    
-complex_array Heston::Rho(
+void Heston::Rho(
+    complex_array &grad,
     complex_matrix &_xi_, 
     complex_array &c,
     complex_array &s,
@@ -189,22 +198,27 @@ complex_array Heston::Rho(
     complex_array dAdrho = this->dA(dhdrho, dgdrho, s, g, i);
     complex_array dBdrho = this->dB(dhdrho, dgdrho, s, g, i);
 
-    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
-        ((dcdrho - dhdrho) * (*tau)(i, 0) - 2 * dAdrho / A) +
-            (v0 / sigma.square()).replicate(1, c.cols()) * 
-        ((dcdrho - dhdrho) * B + (c - s) * dBdrho));
+    grad.block(3 * nDims, 0, nDims, _xi_.cols()) = (
+        ((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+            ((dcdrho - dhdrho) * (*tau)(i, 0) - 2 * dAdrho / A) +
+        (v0 / sigma.square()).replicate(1, c.cols()) * 
+            ((dcdrho - dhdrho) * B + (c - s) * dBdrho)
+    );
 }
 
-complex_array Heston::V0(
+void Heston::V0(
+    complex_array &grad,
     complex_array &c,
     complex_array &s,
     complex_array &B,
     int i
 ) const {
-    return (c - s) * B / sigma.square().replicate(1, c.cols());
+    grad.block(4 * nDims, 0, nDims, xi.cols()) = 
+        (c - s) * B / sigma.square().replicate(1, c.cols());
 }
 
-complex_array Heston::Am(
+void Heston::Am(
+    complex_array &grad,
     complex_matrix &_xi_, 
     complex_array &c,
     complex_array &s,
@@ -224,13 +238,16 @@ complex_array Heston::Am(
     complex_array dAdam = this->dA(dhdam, dgdam, s, g, i);
     complex_array dBdam = this->dB(dhdam, dgdam, s, g, i);
 
-    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
-        ((dcdam - dhdam) * (*tau)(i, 0) - 2 * dAdam / A) +
-            (v0 / sigma.square()).replicate(1, c.cols()) *
-        ((dcdam - dhdam) * B + (c - s) * dBdam));
-};
+    grad.block(5 * nDims, 0, nDims, xi.cols()) = (
+        ((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+            ((dcdam - dhdam) * (*tau)(i, 0) - 2 * dAdam / A) +
+        (v0 / sigma.square()).replicate(1, c.cols()) *
+            ((dcdam - dhdam) * B + (c - s) * dBdam)
+    );
+}
 
-complex_array Heston::An(
+void Heston::An(
+    complex_array &grad,
     complex_matrix &_xi_,
     complex_array &c,
     complex_array &s,
@@ -241,8 +258,9 @@ complex_array Heston::An(
 ) const { 
     complex_array dcdan = -_i_ * _xi_.array() * 
         (rho * sigma).replicate(1, _xi_.cols());
-    complex_array dzdan = 2 * ((an - am).matrix() * _xi_.cwiseProduct(_xi_)).array() +
-        2.0 * _i_ * _xi_.array() * an.replicate(1, _xi_.cols());
+    complex_array dzdan = 2 * ((an - am).matrix() * _xi_.cwiseProduct(_xi_)
+        ).array() +
+            2.0 * _i_ * _xi_.array() * an.replicate(1, _xi_.cols());
     complex_array dhdan = (2 * c * dcdan + 
         sigma.replicate(1, _xi_.cols()).square() * dzdan) / (2 * s);
     std::variant<int, complex_array> dc = dcdan;
@@ -250,13 +268,16 @@ complex_array Heston::An(
     complex_array dAdan = this->dA(dhdan, dgdan, s, g, i);
     complex_array dBdan = this->dB(dhdan, dgdan, s, g, i);
 
-    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
-        ((dcdan - dhdan) * (*tau)(i, 0) - 2 * dAdan / A) +
-            (v0 / sigma.square()).replicate(1, c.cols()) *
-        ((dcdan - dhdan) * B + (c - s) * dBdan));
-};
+    grad.block(6 * nDims, 0, nDims, _xi_.cols()) = (
+        ((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+            ((dcdan - dhdan) * (*tau)(i, 0) - 2 * dAdan / A) +
+        (v0 / sigma.square()).replicate(1, c.cols()) *
+            ((dcdan - dhdan) * B + (c - s) * dBdan)
+    );
+}
 
-complex_array Heston::Rm(
+void Heston::Rm(
+    complex_array &grad,
     complex_matrix &_xi_, 
     complex_array &c,
     complex_array &s,
@@ -272,13 +293,16 @@ complex_array Heston::Rm(
     complex_array dAdrm = this->dA(dhdrm, dgdrm, s, g, i);
     complex_array dBdrm = this->dB(dhdrm, dgdrm, s, g, i);
 
-    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
-        (-dhdrm * (*tau)(i, 0) - 2 * dAdrm / A) +
-            (v0 / sigma.square()).replicate(1, c.cols()) *
-        (-dhdrm * B + (c - s) * dBdrm));
-};
+    grad.block(7 * nDims, 0, nDims, _xi_.cols()) = (
+        ((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+            (-dhdrm * (*tau)(i, 0) - 2 * dAdrm / A) +
+        (v0 / sigma.square()).replicate(1, c.cols()) *
+            (-dhdrm * B + (c - s) * dBdrm)
+    );
+}
 
-complex_array Heston::Rn(
+void Heston::Rn(
+    complex_array &grad,
     complex_matrix &_xi_,
     complex_array &c,
     complex_array &s,
@@ -294,21 +318,27 @@ complex_array Heston::Rn(
     complex_array dAdrn = this->dA(dhdrn, dgdrn, s, g, i);
     complex_array dBdrn = this->dB(dhdrn, dgdrn, s, g, i);
 
-    return (((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
-        (-dhdrn * (*tau)(i, 0) - 2 * dAdrn / A) + (v0 / sigma.square())
-            .replicate(1, c.cols()) *
-        (-dhdrn * B + (c - s) * dBdrn));
-};
+   grad.block(8 * nDims, 0, nDims, _xi_.cols()) = (
+        ((kappa * vbar / sigma.square())).replicate(1, c.cols()) *
+            (-dhdrn * (*tau)(i, 0) - 2 * dAdrn / A) + (v0 / sigma.square())
+        .replicate(1, c.cols()) *
+            (-dhdrn * B + (c - s) * dBdrn)
+    );
+}
 
-complex_array Heston::Rm_init(
+void Heston::Rm_init(
+    complex_array &grad,
     complex_matrix &_xi_,
     int i
-) const { return -_i_ * (*tau)(i, 0) * _xi_.array(); };
+) const { grad.block(9 * nDims, 0, 1, _xi_.cols()) = -_i_ * (*tau)(i, 0) * _xi_.array(); };
 
-complex_array Heston::Rn_init(
+void Heston::Rn_init(
+    complex_array &grad,
     complex_matrix &_xi_, 
     int i
-    ) const { return (-this->Rm_init(_xi_, i)) - 1; };
+    ) const { 
+        grad.block(9 * nDims + 1, 0, 1, _xi_.cols()) = (-grad.block(9 * nDims, 0, 1, _xi_.cols())) - 1; 
+    };
 
 complex_array Heston::phi(
     complex_matrix &_xi_,
@@ -332,7 +362,7 @@ array Heston::price(const array &p) {
 
     array prices((*tau).rows(), (*tau).cols());
     for (int i = 0; i < (*tau).rows(); i++) {
-        double alpha = -4 * (*omegas)(i);       // damping
+        double alpha = -4 * (*omegas)(i);  
         complex_matrix _xi_ = xi + _i_ * alpha; // shifted xi
 
         complex_array c = this->c(_xi_);
@@ -346,9 +376,7 @@ array Heston::price(const array &p) {
         complex_array _phi_ = this->phi(_xi_, c, s, A, B, i);
 
         array moneyness = (array(1, 1) << (*strikes)(i, 0) / S).finished();
-        complex_array payoff = S * 
-            ((moneyness.replicate(1, xi.cols())).pow(_i_ * xi + alpha + 1) /
-                ((_i_ * xi + alpha) * (_i_ * xi + alpha + 1)));
+        complex_array payoff = this->payoff(moneyness, alpha);
 
         array integrand = real((conj(payoff) * _phi_));
         prices.row(i) = integrand.sum() * dxi / (2 * M_PI);
@@ -375,31 +403,37 @@ array Heston::gradient(const array &p) {
 
         complex_array grad = array(p.rows(), _xi_.cols());
 
-        grad.block(0, 0, nDims, _xi_.cols()) = this->Kappa(c, g, s, A, B, i);
-        grad.block(nDims, 0, nDims, _xi_.cols()) = this->Vbar(c, s, A, i);
-        grad.block(2 * nDims, 0, nDims, _xi_.cols()) = this->Sigma(_xi_, c, h, s, g, A, B, i);
-        grad.block(3 * nDims, 0, nDims, _xi_.cols()) = this->Rho(_xi_, c, s, g, A, B, i);
-        grad.block(4 * nDims, 0, nDims, _xi_.cols()) = this->V0(c, s, B, i);
-        grad.block(5 * nDims, 0, nDims, _xi_.cols()) = this->Am(_xi_, c, s, g, A, B, i);
-        grad.block(6 * nDims, 0, nDims, _xi_.cols()) = this->An(_xi_, c, s, g, A, B, i);
-        grad.block(7 * nDims, 0, nDims, _xi_.cols()) = this->Rm(_xi_, c, s, g, A, B, i);
-        grad.block(8 * nDims, 0, nDims, _xi_.cols()) = this->Rn(_xi_, c, s, g, A, B, i);
-        grad.block(9 * nDims, 0, 1, _xi_.cols()) = this->Rm_init(_xi_, i);
-        grad.block(9 * nDims + 1, 0, 1, _xi_.cols()) = this->Rn_init(_xi_, i); 
+        Kappa(grad, c, g, s, A, B, i);
+        Vbar(grad, c, s, A, i);
+        Sigma(grad, _xi_, c, h, s, g, A, B, i);
+        Rho(grad, _xi_, c, s, g, A, B, i);
+        V0(grad, c, s, B, i);
+        Am(grad, _xi_, c, s, g, A, B, i);
+        An(grad, _xi_, c, s, g, A, B, i);
+        Rm(grad, _xi_, c, s, g, A, B, i);
+        Rn(grad, _xi_, c, s, g, A, B, i);
+        Rm_init(grad, _xi_, i);
+        Rn_init(grad, _xi_, i); 
 
         complex_array _phi_ = this->phi(_xi_, c, s, A, B, i);
-        
-        array moneyness = (array(1, 1) << (*strikes)(i, 0) / S).finished();
-        complex_array payoff =
-            S * ((moneyness.replicate(1, xi.cols())).pow(_i_ * xi + alpha + 1) /
-                    ((_i_ * xi + alpha) * (_i_ * xi + alpha + 1)));
 
-        array integrand = real(conj(payoff)
-            .replicate(grad.rows(), 1) * (grad * _phi_.replicate(grad.rows(), 1)));
+        array moneyness = (array(1, 1) << (*strikes)(i, 0) / S).finished();
+        complex_array payoff = this->payoff(moneyness, alpha);
+
+        array integrand = real(conj(payoff).replicate(grad.rows(), 1) * 
+            (grad * _phi_.replicate(grad.rows(), 1)));
+        
         priceGradient.col(i) = (integrand.rowwise().sum() * dxi / (2 * M_PI));
     }
 
     return priceGradient.transpose();
+}
+
+complex_array Heston::payoff(array &moneyness, double damping) const {
+    return S * (
+        (moneyness.replicate(1, xi.cols())).pow(_i_ * xi + damping + 1) /
+            ((_i_ * xi + damping) * (_i_ * xi + damping + 1))
+    ).array();
 }
 
 // internal state 

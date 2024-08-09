@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <variant>
 
 class YieldCurve {
     public:
@@ -14,7 +15,7 @@ class YieldCurve {
 
      array s(array &h);
 
-     arrat g(array &s);
+     array g(array &s);
 
      array A(
          array &g,
@@ -30,9 +31,8 @@ class YieldCurve {
 
      // auxiliary partial derivatives
      array dg(
-         std::variant<int, array> &du, 
+         int du, 
          array &dv, 
-         array &c, 
          array &s
       ) const;
 
@@ -53,7 +53,8 @@ class YieldCurve {
       ) const;
 
      // yield curve sensitivities to Heston params
-     array Kappa(
+     void Kappa(
+        array &grad,
         array &s,
         array &g,
         array &A,
@@ -61,7 +62,8 @@ class YieldCurve {
         int i
      ) const;
 
-    array Vbar(
+    void Vbar(
+        array &grad,
         array &s,
         array &g, 
         array &A,
@@ -69,15 +71,18 @@ class YieldCurve {
         int i
      ) const;
 
-     array Sigma(
-        array &s, 
+     void Sigma(
+        array &grad,
+        array &s,
+        array &h, 
         array &g,
         array &A,
         array &B,
         int i
      ) const;
 
-     array V0(
+     void V0(
+        array &grad,
         array &s,
         array &g, 
         array &A,
@@ -85,15 +90,8 @@ class YieldCurve {
         int i
      ) const;
 
-     array R(
-        array &s,
-        array &g, 
-        array &A,
-        array &B,
-        int i
-     ) const;
-
-     array (
+     void R(
+        array &grad, 
         array &s,
         array &g, 
         array &A,
@@ -115,9 +113,10 @@ class YieldCurve {
      void _updateParams(const array &p);
 
      array kappa, vbar, sigma, rho, v0, am, an, rm, rn;
-     ndarray<double, 1, 1> rm_init, rn_init;
+     double rm_init, rn_init;
 
      std::string currency;
      unsigned nDims;  
-}
+};
+
 #endif // YIELD_CURVE_H

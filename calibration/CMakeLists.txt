@@ -9,6 +9,7 @@ target_sources(preprocessing PRIVATE
     model.cc
     black_scholes.cc
     heston.cc
+    yield_curve.cc
     utils/functions.cc
     utils/parser.cc
 )

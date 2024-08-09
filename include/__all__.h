@@ -7,5 +7,6 @@
 #include <heston.h>
 #include <underlying.h>
 #include <options.h>
+#include <yield_curve.h>
 
 #endif  // __GENERAL_ALL__H

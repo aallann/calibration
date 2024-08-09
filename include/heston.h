@@ -75,7 +75,8 @@ class Heston : public Model{
       ) const;
 
      // charf sensitivities to Heston parameters
-      complex_array Kappa(
+      void Kappa(
+         complex_array &grad,
          complex_array &c,
          complex_array &g,
          complex_array &s,
@@ -84,14 +85,16 @@ class Heston : public Model{
          int i
       ) const;
 
-     complex_array Vbar(
+     void Vbar(
+         complex_array &grad,
          complex_array &c,
          complex_array &s,
          complex_array &A,
          int i
       ) const;
 
-     complex_array Sigma(
+     void Sigma(
+         complex_array &grad,
          complex_matrix &_xi_,
          complex_array &c,
          complex_array &h,
@@ -102,7 +105,8 @@ class Heston : public Model{
          int i
       ) const;
    
-      complex_array Rho(
+      void Rho(
+         complex_array &grad,
          complex_matrix &_xi_,
          complex_array &c,
          complex_array &s,
@@ -112,14 +116,16 @@ class Heston : public Model{
          int i
       ) const;
 
-      complex_array V0(
+      void V0(
+         complex_array &grad,
          complex_array &c,
          complex_array &s,
          complex_array &B,
          int i
       ) const;
 
-      complex_array Am(
+      void Am(
+         complex_array &grad,
          complex_matrix &_xi_,
          complex_array &c,
          complex_array &s,
@@ -129,7 +135,8 @@ class Heston : public Model{
          int i
       ) const;
 
-      complex_array An(
+      void An(
+         complex_array &grad,
          complex_matrix &_xi_,
          complex_array &c,
          complex_array &s,
@@ -139,7 +146,8 @@ class Heston : public Model{
          int i
       ) const;
 
-      complex_array Rm(
+      void Rm(
+         complex_array &grad,
          complex_matrix &_xi_,
          complex_array &c,
          complex_array &s,
@@ -149,7 +157,8 @@ class Heston : public Model{
          int i
       ) const;
 
-      complex_array Rn(
+      void Rn(
+         complex_array &grad,
          complex_matrix &_xi_,
          complex_array &c,
          complex_array &s,
@@ -159,12 +168,14 @@ class Heston : public Model{
          int i
       ) const;
 
-      complex_array Rn_init(
+      void Rn_init(
+         complex_array &grad,
          complex_matrix &_xi_,
          int i
       ) const;
 
-      complex_array Rm_init(
+      void Rm_init(
+         complex_array &grad,
          complex_matrix &_xi_,
          int i
       ) const;
@@ -181,6 +192,8 @@ class Heston : public Model{
      array price(const array &p);
 
      array gradient(const array &p);
+
+     complex_array payoff(array &moneyness, double damping) const;
 
      inline static void setStrikes(std::shared_ptr<array> strikes_ptr) {
         Heston::strikes = strikes_ptr;
